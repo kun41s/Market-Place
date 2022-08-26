@@ -1,10 +1,40 @@
 import './App.css';
+import React , { useEffect, useState } from 'react';
+const ethers = require("ethers");
 
 function App() {
+
+  const [currentAccount, setCurrentAccount] = useState("");
+
+  const getWallet = async() => {
+    try {
+        const {ethereum} = window;
+
+        if (!ethereum) {
+          alert("Get Metamask Wallet!");
+        }
+
+        await ethereum.request({method: "eth_accounts"});
+
+        await ethereum.request({method: "eth_requestAccounts"});
+        
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        let userAddress = await signer.getAddress();
+        console.log("address", userAddress);
+        setCurrentAccount(userAddress);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  getWallet();
+
+
   return (
     <div className="App">
       <h1>Basic Marketplace</h1>
-      <div id='wallet'>0x1234</div>
+      <div id='wallet'>Your wallet address is : {currentAccount}</div>
 
       <div>
         <h2>Add new item</h2>
