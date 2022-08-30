@@ -1,35 +1,23 @@
+import { useState } from 'react';
 import './App.css';
-import React , { useEffect, useState } from 'react';
-const ethers = require("ethers");
+import Wallet from "./components/connectWallet";
 
-function App() {
+function App()  {
 
   const [currentAccount, setCurrentAccount] = useState("");
+  let getProducts;
+ 
+  const getData = async() => {
+    const wallet = await Wallet();
+    // console.log(wallet);
+    const account = (await wallet.signer.getAddress()).valueOf();
+    setCurrentAccount(account);
 
-  const getWallet = async() => {
-    try {
-        const {ethereum} = window;
-
-        if (!ethereum) {
-          alert("Get Metamask Wallet!");
-        }
-
-        await ethereum.request({method: "eth_accounts"});
-
-        await ethereum.request({method: "eth_requestAccounts"});
-        
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        let userAddress = await signer.getAddress();
-        console.log("address", userAddress);
-        setCurrentAccount(userAddress);
-    } catch (error) {
-      console.log(error);
-    }
+    getProducts = await wallet.getProducts();
+    console.log(getProducts);
   }
 
-  getWallet();
-
+  getData();
 
   return (
     <div className="App">
@@ -50,24 +38,24 @@ function App() {
 
       <div>
         <h2>All Items</h2>
-        <div id='addItems'>
-          {/* load items */}
-        </div>
 
-        <div id='itemTemplate'>
-          <div className='card'>
-            <div className='container'>
-              <strong>Item Name</strong>: <span className='itemName'></span><br />
-              <strong>Item Creator</strong>: <span className='itemCreator'></span><br />
-              <strong>Item Owner</strong>: <span className='itemOwner'></span><br />
-              <strong>Asking Price</strong>: <span className='askingPrice'></span><br />
-              <strong>Item Status</strong>: <span className='itemStatus'></span><br />
-              <button type='button' className='buyBtn' itemID='0'>Buy</button>
-
-
+          {getProducts.map((data, i) => {
+            console.log(data);
+            return (
+              <div key={i} id='itemTemplate'>
+              <div className='card' >
+                <div className='container'>
+                  <strong>Item Name</strong>: {""}<br />
+                  <strong>Item Creator</strong>: {""}<br />
+                  <strong>Item Owner</strong>: {""}<br />
+                  <strong>Asking Price</strong>: {""}<br />
+                  <strong>Item Status</strong>: {""}<br />
+                  <button type='button' className='buyBtn' itemID='0'>Buy</button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+           )
+          })}   
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ contract MarketPlace {
 
     constructor() {
         totalProducts = 0;
+        addProduct("samsung", 25000);
+        addProduct("apple", 50000);
     }
 
     //add product to blockchain
@@ -51,16 +53,16 @@ contract MarketPlace {
     }
 
     //get all product list
-    // function getProducts() public view returns(Product[] memory) {
-    //     Product[] memory prodList = new Product[](totalProducts);
+    function getProducts() public view returns(Product[] memory) {
+        Product[] memory prodList = new Product[](totalProducts);
 
-    //     for (uint i = 0; i < totalProducts; i++) {
-    //         Product storage product = products[i];
-    //         prodList[i] = product;
-    //     }
+        for (uint i = 0; i < totalProducts; i++) {
+            Product storage product = products[i];
+            prodList[i] = product;
+        }
 
-    //     return prodList;
-    // }
+        return prodList;
+    }
 
     function sellProduct(uint256 _prodId) public {
         Product storage product = products[_prodId];
