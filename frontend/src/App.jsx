@@ -1,37 +1,38 @@
-import { useState } from 'react';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
 import Wallet from "./components/connectWallet";
 
-function App()  {
-
+function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  let getProducts;
- 
-  const getData = async() => {
+  const [productDetails, setProductDetails] = useState([]);
+
+  const getData = async () => {
     const wallet = await Wallet();
     // console.log(wallet);
     const account = (await wallet.signer.getAddress()).valueOf();
     setCurrentAccount(account);
 
-    getProducts = await wallet.getProducts();
-    console.log(getProducts);
-  }
+    const getProducts = await wallet.getProducts();
+    setProductDetails(getProducts);
+  };
 
   getData();
 
   return (
     <div className="App">
       <h1>Basic Marketplace</h1>
-      <div id='wallet'>Your wallet address is : {currentAccount}</div>
+      <div id="wallet">Your wallet address is : {currentAccount}</div>
 
       <div>
         <h2>Add new item</h2>
         <div>
-          <input type="text"  id='new_itemName' placeholder='Item name..'/>
-          <input type="text" id='new_askingPrice' placeholder='Asking Price'/>
+          <input type="text" id="new_itemName" placeholder="Item name.." />
+          <input type="text" id="new_askingPrice" placeholder="Asking Price" />
 
           <div>
-            <button type='button' className='btn'>Add Item</button>
+            <button type="button" className="btn">
+              Add Item
+            </button>
           </div>
         </div>
       </div>
@@ -39,23 +40,28 @@ function App()  {
       <div>
         <h2>All Items</h2>
 
-          {getProducts.map((data, i) => {
-            console.log(data);
-            return (
-              <div key={i} id='itemTemplate'>
-              <div className='card' >
-                <div className='container'>
-                  <strong>Item Name</strong>: {""}<br />
-                  <strong>Item Creator</strong>: {""}<br />
-                  <strong>Item Owner</strong>: {""}<br />
-                  <strong>Asking Price</strong>: {""}<br />
-                  <strong>Item Status</strong>: {""}<br />
-                  <button type='button' className='buyBtn' itemID='0'>Buy</button>
-                </div>
+        {productDetails.map((data, i) => {
+          return (
+            <div key={i} className="card">
+              <div className="container">
+                <strong>Item Name</strong>: {data.itemName}
+                <br />
+                <strong>Item Creator</strong>: {data.creator}
+                <br />
+                <strong>Item Owner</strong>: {data.owner}
+                <br />
+                <strong>Asking Price</strong>: {data.askingPrice.toString()}
+                <br />
+                <strong>Item Status</strong>:{" "}
+                {data.isSold.toString().toUpperCase()}
+                <br />
+                <button type="button" className="buyBtn" itemID="0">
+                  Buy
+                </button>
               </div>
             </div>
-           )
-          })}   
+          );
+        })}
       </div>
     </div>
   );

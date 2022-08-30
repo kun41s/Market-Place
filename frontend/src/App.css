@@ -1,5 +1,5 @@
 button {
-  background-color: #008CBA;
+  background-color: #008cba;
   border: none;
   color: white;
   padding: 5px 14px;
@@ -15,7 +15,7 @@ button:hover {
   background-color: #0080ff;
 }
 
-input[type=text] {
+input[type="text"] {
   padding: 10px 15px;
   margin: 8px;
   box-sizing: border-box;
