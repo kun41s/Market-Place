@@ -1,11 +1,7 @@
 import abi from "../utils/MarketPlace.json";
-import wallet from "./connectWallet";
 const ethers = require("ethers");
 
 const ConnectWallet = async () => {
-  // const [currentAccount, setCurrentAccount] = useState("");
-  // let signer = [];
-  // let currentAccount;
 
   try {
     const { ethereum } = window;

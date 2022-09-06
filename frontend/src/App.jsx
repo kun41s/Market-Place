@@ -1,36 +1,67 @@
 import { useState } from "react";
 import "./App.css";
-import Wallet from "./components/connectWallet";
+import MarketPlace from "./components/connectWallet";
 
 function App() {
+
   const [currentAccount, setCurrentAccount] = useState("");
   const [productDetails, setProductDetails] = useState([]);
+  const [input, setInput] = useState({
+    productName: "",
+    productPrice: ""
+  });
 
-  const getData = async () => {
-    const wallet = await Wallet();
-    // console.log(wallet);
-    const account = (await wallet.signer.getAddress()).valueOf();
+  const getContract = async () => {
+    const marketPlace = await MarketPlace();
+    // console.log(marketPlace);
+    const account = (await marketPlace.signer.getAddress()).valueOf();
     setCurrentAccount(account);
 
-    const getProducts = await wallet.getProducts();
+    const getProducts = await marketPlace.getProducts();
     setProductDetails(getProducts);
+
+    return marketPlace;
   };
 
-  getData();
+  function handleInputChange(event) {
+    const {name, value} = event.target;
+
+    setInput((product) => {
+      return {
+        ...product,
+        [name]: value
+      }
+    })
+  }
+
+  async function submitProduct(event) {
+    event.preventDefault();
+    console.log(input.productName, input.productPrice);
+    const contract = await getContract();
+    await contract.addProduct(input.productName, input.productPrice);
+  }
+
+  getContract();
 
   return (
     <div className="App">
       <h1>Basic Marketplace</h1>
-      <div id="wallet">Your wallet address is : {currentAccount}</div>
+      <div id="marketPlace">Your marketPlace address is : {currentAccount}</div>
 
       <div>
         <h2>Add new item</h2>
         <div>
-          <input type="text" id="new_itemName" placeholder="Item name.." />
-          <input type="text" id="new_askingPrice" placeholder="Asking Price" />
+          <form onSubmit={submitProduct}>
+            <label>
+              <input name="productName" onChange={handleInputChange} value={input.productName} placeholder="Product name.." />
+            </label>
 
+            <label>
+              <input name="productPrice" onChange={handleInputChange} value={input.productPrice} placeholder="Asking Price" />
+            </label>
+          </form>
           <div>
-            <button type="button" className="btn">
+            <button type="button" onClick={submitProduct} className="btn">
               Add Item
             </button>
           </div>
